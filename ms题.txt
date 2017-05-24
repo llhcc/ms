@@ -698,6 +698,9 @@ redis比memcache稳定，有持久化机制，支持更多的数据类型
 20、spring ioc aop是什么，实现动态代理有哪些方式，代理类和原来的类之间是什么关系
 --------------------------------
 21、什么是悲观锁和乐观锁，分别如何实现
+
+乐观锁，就是在数据库设计一个版本号的字段，每次修改都使其+1，这样在提交时比对提交前的版本号就知道是不是并发提交了，但是有个缺点就是只能是应中控制，如果有跨应用修改同一条数据乐观锁就没办法了，这个时候可以考虑悲观锁。
+悲观锁，就是直接在数据库层面将数据锁死，类似于oralce中使用select xxxxx from xxxx where xx=xx for update，这样其他线程将无法提交数据。
 --------------------------------
 22、java有哪几种自带的线程池，说说它们的应用场景
 --------------------------------
@@ -712,6 +715,68 @@ redis比memcache稳定，有持久化机制，支持更多的数据类型
 27、说说jvm内存模式及如何调优
 --------------------------------
 28、如何对tomcat调优
+Tomcat 优化分为：系统优化、Java虚拟机调优、Tomcat本身的优化。
+一、调整tomcat的占用内存
+将JAVA_OPTS="-Xms 1024m –Xmx 1520m"一行的两个参数依据服务器实际内存数量分别进行更改：
+        - Xms为tomcat启动初始内存，一般为服务器开机后可用空闲内存减去100M
+        - Xmx为tomcat最大占用内存，一般为服务器开机后可用空闲内存减去50M
+一般说来，您应该使用物理内存的 80% 作为堆大小。
+二、调整tomcat的线程参数
+编辑tomcat安装目录下的conf目录下的server.xml文件
+在tomcat配置文件server.xml中的<Connector />配置中，和连接数相关的参数有：
+maxThreads="150"     表示最多同时处理150个连接,Tomcat使用线程来处理接收的每个请求。这个值表示Tomcat可创建的最大的线程数。默认值200。   
+minSpareThreads="25"     表示即使没有人使用也开这么多空线程等待  
+  maxSpareThreads="75"     表示如果最多可以空75个线程，例如某时刻有80人访问，之后没有人访问了，则tomcat不会保留80个空线程，而是关闭5个空的。  （一旦创建的线程超过这个值，Tomcat就会关闭不再需要的socket线程。默认值50。 
+）
+   
+  acceptCount="100"   当同时连接的人数达到maxThreads时，还可以接收排队的连接数量，超过这个连接的则直接返回拒绝连接。（指定当任何能够使用的处理请求的线程数都被使用时，能够放到处理队列中的请求数，超过这个数的请求将不予处理。默认值100。 ）
+其中和最大连接数相关的参数为maxThreads和acceptCount。如果要加大并发连接数，应同时加大这两个参数。
+web server允许的最大连接数还受制于操作系统的内核参数设置，通常Windows是2000个左右，Linux是1000个左右。tomcat5中的配置示例：
+    <Connector port="8080"
+               maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
+               acceptCount="100"/>
+主要是调整maxThreads 和acceptCount的值
+enableLookups： 
+是否反查域名，默认值为true。为了提高处理能力，应配置为false 
+connnectionTimeout： 
+网络连接超时，默认值60000，单位：毫秒。配置为0表示永不超时，这样配置有隐患的。通常可配置为30000毫秒。
+
+三、指定使用线程池来处理HTTP请求
+首先要配置一个线程池来处理请求（与Connector是平级的，多个Connector可以使用同一个线程池来处理请求） 
+<Executor name="tomcatThreadPool" namePrefix="catalina-exec-" 
+maxThreads="1000" minSpareThreads="50" maxIdleTime="600000"/> 
+<Connector port="8080"	
+executor="tomcatThreadPool"	指定使用的线程池 
+四、其它常用设置 
+maxHttpHeaderSize="8192"	http请求头信息的最大程度，超过此长度的部分不予处理。一般8K。 
+URIEncoding="UTF-8"	指定Tomcat容器的URL编码格式。 
+disableUploadTimeout="true"	上传时是否使用超时机制 
+enableLookups="false"--是否反查域名，默认值为true。为了提高处理能力，应设置为false 
+compression="on"   打开压缩功能 
+compressionMinSize="10240"	启用压缩的输出内容大小，默认为2KB 
+noCompressionUserAgents="gozilla, traviata"   对于以下的浏览器，不启用压缩 
+compressableMimeType="text/html,text/xml,text/javascript,text/css,text/plain" 哪些资源类型需要压缩 
+
+五、配置示例 
+<Connector port="8080" 
+redirectPort="8443"	
+maxThreads="150" 
+minSpareThreads="25" 
+maxSpareThreads="75" 
+acceptCount="100" 
+connectionTimeout="20000" 
+protocol="HTTP/1.1" 
+
+maxHttpHeaderSize="8192" 
+URIEncoding="UTF-8" 
+disableUploadTimeout="true" 
+enableLookups="false" 
+compression="on" 
+compressionMinSize="10240" 
+noCompressionUserAgents="gozilla, traviata" 
+compressableMimeType="text/html,text/xml,text/javascript,text/css,text/plain"> 
+... 
+</Connector>
 --------------------------------
 29、用户登录有哪些保障安全的手段
 
@@ -808,6 +873,17 @@ TCP 4次挥手
 为什么要4次挥手？
 确保数据能够完成传输。
 但关闭连接时，当收到对方的FIN报文通知时，它仅仅表示对方没有数据发送给你了；但未必你所有的数据都全部发送给对方了，所以你可以未必会马上会关闭SOCKET,也即你可能还需要发送一些数据给对方之后，再发送FIN报文给对方来表示你同意现在可以关闭连接了，所以它这里的ACK报文和FIN报文多数情况下都是分开发送的。
+
+例子：
+TCP连接的三次握手：
+
+第一次(A--->B)，SYN=1，seq=x
+第二次(B--->A)，SYN=1，ACK=1，seq=y，ack=x+1 //seq为什么是y，ack为什么是x+1？
+第三次(A--->B)，ACK=1，seq=x+1,ack=y+1 //seq为什么是x+1，ack为什么是y+1？
+
+eq是序列号，这是为了连接以后传送数据用的，ack是对收到的数据包的确认，值是等待接收的数据包的序列号。
+在第一次消息发送中，A随机选取一个序列号作为自己的初始序号发送给B；第二次消息B使用ack对A的数据包进行确认，因为已经收到了序列号为x的数据包，准备接收序列号为x+1的包，所以ack=x+1，同时B告诉A自己的初始序列号，就是seq=y；第三条消息A告诉B收到了B的确认消息并准备建立连接，A自己此条消息的序列号是x+1，所以seq=x+1，而ack=y+1是表示A正准备接收B序列号为y+1的数据包。
+seq是数据包本身的序列号；ack是期望对方继续发送的那个数据包的序列号。
 --------------------------------
 32、HTTP报文有哪几个部分
 请求报文：报文首部和报文主体（空行分割）
@@ -853,6 +929,7 @@ Consistent hashing 的基本思想就是将对象和 cache 都映射到同一个 hash 数值空间中，
 
 --------------------------------
 37、说说类加载机制，它们是怎么设计的
+
 --------------------------------
 38、你怎么做职业规划的，未来三年你有什么规划
 --------------------------------
@@ -861,15 +938,17 @@ Consistent hashing 的基本思想就是将对象和 cache 都映射到同一个 hash 数值空间中，
 40、你为什么要离职（这个要慎重，千万不要抱怨前任公司，更不要说坏话，不然你技术再牛逼也过不了）
 
 
+-------------------------------
+
 --------------------------------
+  对于WEB应用集群的技术实现而言，最大的难点就是如何能在集群中的多个节点之间保持数据的一致性，会话（Session）信息是这些数据中最重要的一块。
+要实现这一点，大体上有两种方式，一种是把所有Session数据放到一台服务器上或者数据库中，集群中的所有节点通过访问这台Session服务器来获取数据；
+另一种就是在集群中的所有节点间进行Session数据的同步拷贝，任何一个节点均保存了所有的Session数据。两种方式都各有优点，
+第一种方式简单、易于实现，但是存在着Session服务器发生故障会导致全系统不能正常工作的风险；
+第二种方式可靠性更高，任一节点的故障不会对整个系统对客户访问的响应产生影响，但是技术实现上更复杂一些。
+常见的平台或中间件如microsoftasp.net和IBM WAS都会提供对两种共享方式的支持，tomcat也是这样，但是一般采用第二种方式。 
 
-乐观锁，就是在数据库设计一个版本号的字段，每次修改都使其+1，这样在提交时比对提交前的版本号就知道是不是并发提交了，但是有个缺点就是只能是应中控制，如果有跨应用修改同一条数据乐观锁就没办法了，这个时候可以考虑悲观锁。
-
-悲观锁，就是直接在数据库层面将数据锁死，类似于oralce中使用select xxxxx from xxxx where xx=xx for update，这样其他线程将无法提交数据。
-
-
-
-
+--------------------------------
 
 
 
