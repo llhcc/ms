@@ -637,11 +637,23 @@ redis比memcache稳定，有持久化机制，支持更多的数据类型
 一个更好的方案是给这些线程设置优先级，让一个（或几个）线程回退，剩下的线程就像没发生死锁一样继续保持着它们需要的锁。如果赋予这些线程的优先级是固定不变的，同一批线程总是会拥有更高的优先级。为避免这个问题，可以在死锁发生的时候设置随机的优先级。
 
 --------------------------------
-6、zookeeper
+6、zookeeper(http://blog.csdn.net/duke370503/article/details/52623192)
+简单的说，zookeeper=文件系统+通知机制。
+所谓集群管理无在乎两点：是否有机器退出和加入、选举master。
+锁服务可以分为两类，一个是保持独占，另一个是控制时序。
+
 1）说说选举算法
+
 2）有哪几种节点类型
+ZooKeeper服务器的三种节点类型（需要区分这里的“节点”和名字空间的“节点”，完全不是同一个意思）：领导者（leader），追随者（follower），观察者（observer）。
+
 3）有哪些应用场景
+
 4）如何部署集群，至少有几台机器？
+
+
+Zookeeper的核心是原子广播，这个机制保证了各个Server之间的同步。实现这个机制的协议叫做Zab协议。Zab协议有两种模式，它们分 别是恢复模式（选主）和广播模式（同步）。当服务启动或者在领导者崩溃后，Zab就进入了恢复模式，当领导者被选举出来，且大多数Server完成了和 leader的状态同步以后，恢复模式就结束了。状态同步保证了leader和Server具有相同的系统状态。
+为了保证事务的顺序一致性，zookeeper采用了递增的事务id号（zxid）来标识事务。所有的提议（proposal）都在被提出的时候加上 了zxid。实现中zxid是一个64位的数字，它高32位是epoch用来标识leader关系是否改变，每次一个leader被选出来，它都会有一个 新的epoch，标识当前属于那个leader的统治时期。低32位用于递增计数。
 --------------------------------
 7、dubbo
 1）里面用的什么通信框架
@@ -654,12 +666,55 @@ redis比memcache稳定，有持久化机制，支持更多的数据类型
 8）说说核心的配置有哪些
 --------------------------------
 8、线程同步的有哪些方式
+1.同步方法
+2.同步代码块 
+3.使用特殊域变量(volatile)实现线程同步
+4.使用重入锁实现线程同步(ReentrantLock类是可重入、互斥、实现了Lock接口的锁)
+5.使用局部变量实现线程同步(如果需要隔离多个线程之间的共享冲突，可以使用ThreadLocal)
 --------------------------------
 9、说说你们公司的架构并画出来
 --------------------------------
 10、springmvc加载流程
+ Tomcat服务器启动入口文件是web.xml，通过在其中配置相关的Listener和Servlet即可加载Spring MVC所需数据。
+ContextLoaderListener基于Web上下文级别的监听器在启动服务器时就创建ApplicationContext并且将配置的Spring Bean加载到XML中。
+DispatcherServlet是一个请求分发控制器，所有匹配的URL都会通过该Servlet分发执行，在创建Servlet对象时会初始化Spring MVC相关配置。
+
+ConextLoaderListener加载Spring上下文的过程:
+①启动项目时触发contextInitialized方法，该方法就做一件事：通过父类contextLoader的initWebApplicationContext方法创建Spring上下文对象。
+②initWebApplicationContext方法做了三件事：创建WebApplicationContext；加载对应的Spring文件创建里面的Bean实例；将WebApplicationContext放入ServletContext（就是Java Web的全局变量）中。
+③createWebApplicationContext创建上下文对象，支持用户自定义的上下文对象，但必须继承自ConfigurableWebApplicationContext，而Spring MVC默认使用ConfigurableWebApplicationContext作为ApplicationContext（它仅仅是一个接口）的实现。
+④configureAndRefreshWebApplicationContext方法用于封装ApplicationContext数据并且初始化所有相关Bean对象。它会从web.xml中读取名为contextConfigLocation的配置，这就是spring xml数据源设置，然后放到ApplicationContext中，最后调用传说中的refresh方法执行所有Java对象的创建。
+⑤完成ApplicationContext创建之后就是将其放入ServletContext中，注意它存储的key值常量。
+
+DispatcherServlet加载过程:
+①HttpServletBean.init方法中执行initServletBean方法进行初始化操作，当然该方法在HttpServletBean是空方法，所以需要子类重写。
+②FrameworkServlet.initServletBean子类不负众望，重写了initServletBean方法，该方法最核心的操作就是调用initWebApplicationContext()执行上下文Bean初始化。
+③FrameworkServlet.initWebApplicationContext方法首先获取自己的双亲上下文（也就是ContextLoaderListener初始化成功的WebApplicationContext）；然后创建或者获取当前Servelet的WebApplicationContext。
+④无论是自己创建还是获取现有的WebApplicationContext，最终都会让Servelt级别的WebApplicationContext执行configureAndRefreshWebApplicationContext()方法进行上下文容器初始化。
+
+spring通过在web.xml 中配置ContextLoaderListener 来加载context配置文件，在DispatcherServlet中也可以来加载spring context配置文件
+
 --------------------------------
 11、nginx有哪几种负载均衡算法
+1、轮询（默认）
+
+        每个请求按时间顺序逐一分配到不同的后端服务，如果后端某台服务器死机，自动剔除故障系统，使用户访问不受影响。
+
+    2、weight（轮询权值）
+
+        weight的值越大分配到的访问概率越高，主要用于后端每台服务器性能不均衡的情况下。或者仅仅为在主从的情况下设置不同的权值，达到合理有效的地利用主机资源。
+
+    3、ip_hash
+
+        每个请求按访问IP的哈希结果分配，使来自同一个IP的访客固定访问一台后端服务器，并且可以有效解决动态网页存在的session共享问题。
+
+    4、fair
+
+        比 weight、ip_hash更加智能的负载均衡算法，fair算法可以根据页面大小和加载时间长短智能地进行负载均衡，也就是根据后端服务器的响应时间 来分配请求，响应时间短的优先分配。Nginx本身不支持fair，如果需要这种调度算法，则必须安装upstream_fair模块。
+
+    5、url_hash
+
+        按访问的URL的哈希结果来分配请求，使每个URL定向到一台后端服务器，可以进一步提高后端缓存服务器的效率。Nginx本身不支持url_hash，如果需要这种调度算法，则必须安装Nginx的hash软件包。
 --------------------------------
 12、mysql
 1）如何进行sql优化？如何进行性能检测
@@ -689,6 +744,38 @@ redis分布式锁即可以结合zk分布式锁锁高度安全和memcached并发场景下效率很好的优点，
 锁表
 --------------------------------
 15、spring事务传播机制有哪些，如何用jdbc实现require_new
+事务传播行为类型:
+PROPAGATION_REQUIRED
+如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是最常见的选择。
+PROPAGATION_SUPPORTS
+支持当前事务，如果当前没有事务，就以非事务方式执行。
+PROPAGATION_MANDATORY
+使用当前的事务，如果当前没有事务，就抛出异常。
+PROPAGATION_REQUIRES_NEW
+新建事务，如果当前存在事务，把当前事务挂起。
+PROPAGATION_NOT_SUPPORTED
+以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+PROPAGATION_NEVER
+以非事务方式执行，如果当前存在事务，则抛出异常。
+PROPAGATION_NESTED
+如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与PROPAGATION_REQUIRED类似的操作。
+
+以下几个问题值得注意：
+1) 当业务方法被设置为PROPAGATION_MANDATORY时，它就不能被非事务的业务方法调用。
+如将ForumService#addTopic ()设置为PROPAGATION_MANDATORY，如果展现层的Action直接调用addTopic()方法，将引发一个异常。
+正确的情况是： addTopic()方法必须被另一个带事务的业务方法调用（如ForumService#otherMethod()）。
+所以 PROPAGATION_MANDATORY的方法一般都是被其它业务方法间接调用的。
+2) 当业务方法被设置为PROPAGATION_NEVER时，它将不能被拥有事务的其它业务方法调用。假设UserService#addCredits ()设置为PROPAGATION_NEVER，当ForumService# addTopic()拥有一个事务时，addCredits()方法将抛出异常。所以PROPAGATION_NEVER方法一般是被直接调用的。
+3)当方法被设置为PROPAGATION_NOT_SUPPORTED时，外层业务方法的事务会被挂起，当内部方法运行完成后，外层方法的事务重新运行。如果外层方法没有事务，直接运行，不需要做任何其它的事。
+
+PROPAGATION_REQUIRES_NEW 和 PROPAGATION_NESTED也是容易混淆的两个传播行为。
+PROPAGATION_REQUIRES_NEW 启动一个新的、和外层事务无关的“内部”事务。该事务拥有自己的独立隔离级别和锁，不依赖于外部事务，独立地提交和回滚。当内部事务开始执行时，外部事务 将被挂起，内务事务结束时，外部事务才继续执行。
+由此可见， PROPAGATION_REQUIRES_NEW 和 PROPAGATION_NESTED 的最大区别在于：
+PROPAGATION_REQUIRES_NEW 将创建一个全新的事务，它和外层事务没有任何关系，而
+PROPAGATION_NESTED 将创建一个依赖于外层事务的子事务，当外层事务提交或回滚时，子事务也会连带提交和回滚。
+
+内嵌事务是内层事务的一 部分，所以只有外层事务提交时，嵌套事务才能一并提交。
+嵌套事务不能够提交，它必须通过外层事务来完成提交的动作，外层事务的回滚也会造成内部事务的回滚。
 --------------------------------
 16、java集合常用类及数据结构
 --------------------------------
@@ -711,6 +798,12 @@ redis分布式锁即可以结合zk分布式锁锁高度安全和memcached并发场景下效率很好的优点，
 见图：线程状态转换
 --------------------------------
 20、spring ioc aop是什么，实现动态代理有哪些方式，代理类和原来的类之间是什么关系
+
+AOP:
+方式一：Annatation 注解方式
+方式二：配置文件方式
+
+
 --------------------------------
 21、什么是悲观锁和乐观锁，分别如何实现
 
