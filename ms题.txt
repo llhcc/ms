@@ -646,6 +646,10 @@ redis±ÈmemcacheÎÈ¶¨£¬ÓÐ³Ö¾Ã»¯»úÖÆ£¬Ö§³Ö¸ü¶àµÄÊý¾ÝÀàÐÍ
 
 2£©ÓÐÄÄ¼¸ÖÖ½ÚµãÀàÐÍ
 ZooKeeper·þÎñÆ÷µÄÈýÖÖ½ÚµãÀàÐÍ£¨ÐèÒªÇø·ÖÕâÀïµÄ¡°½Úµã¡±ºÍÃû×Ö¿Õ¼äµÄ¡°½Úµã¡±£¬ÍêÈ«²»ÊÇÍ¬Ò»¸öÒâË¼£©£ºÁìµ¼Õß£¨leader£©£¬×·ËæÕß£¨follower£©£¬¹Û²ìÕß£¨observer£©¡£
+Leader½ÓÊÕËùÓÐFollowerµÄÌá°¸ÇëÇó²¢Í³Ò»Ð­µ÷·¢ÆðÌá°¸µÄÍ¶Æ±£¬¸ºÔðÓëËùÓÐµÄFollower½øÐÐÄÚ²¿µÄÊý¾Ý½»»»(Í¬²½)£»
+FollowerÖ±½ÓÎª¿Í»§¶Ë·þÎñ²¢²ÎÓëÌá°¸µÄÍ¶Æ±£¬Í¬Ê±ÓëLeader½øÐÐÊý¾Ý½»»»(Í¬²½)£» 
+ObserverÖ±½ÓÎª¿Í»§¶Ë·þÎñµ«²¢²»²ÎÓëÌá°¸µÄÍ¶Æ±£¬Í¬Ê±Ò²ÓëLeader½øÐÐÊý¾Ý½»»»(Í¬²½)¡£
+ZooKeeperµÄÄ¿±ê¾ÍÊÇ·â×°ºÃ¸´ÔÓÒ×³ö´íµÄ¹Ø¼ü·þÎñ£¬½«¼òµ¥Ò×ÓÃµÄ½Ó¿ÚºÍÐÔÄÜ¸ßÐ§¡¢¹¦ÄÜÎÈ¶¨µÄÏµÍ³Ìá¹©¸øÓÃ»§¡£
 
 3£©ÓÐÄÄÐ©Ó¦ÓÃ³¡¾°
 
@@ -657,13 +661,31 @@ ZookeeperµÄºËÐÄÊÇÔ­×Ó¹ã²¥£¬Õâ¸ö»úÖÆ±£Ö¤ÁË¸÷¸öServerÖ®¼äµÄÍ¬²½¡£ÊµÏÖÕâ¸ö»úÖÆµÄÐ­Ò
 --------------------------------
 7¡¢dubbo
 1£©ÀïÃæÓÃµÄÊ²Ã´Í¨ÐÅ¿ò¼Ü
+ÑÐ¾¿dubbo¿ò¼ÜµÄÊ±ºò£¬·¢ÏÖÔÚprotocalÐ­ÒéµÄÑ¡ÔñÉÏ£¨¼´Ñ¡ÔñÄÄÖÖÐ­ÒéÓÃÓÚÊµÏÖÔ¶³Ìµ÷ÓÃ£©Ä¿Ç°ÓÐdubbo£¬rmi£¬httpµÈ.
+dubboÊÇÄ¬ÈÏÍÆ¼öµÄ·½Ê½£¬Ê¹ÓÃ³¤Á¬½Ó£¬nioµÄÐÎÊ½¡£ÊµÏÖÉÏ¾ÍÊÇ·þÎñÏû·Ñ·½Óë·þÎñÌá¹©·½¼°×¢²áÖÐÐÄÖ®¼äÊ¹ÓÃ³¤Á¬½Ó¡£
 2£©ºÍdubboxÓÐÊ²Ã´Çø±ð
+µ±µ±Íø½üÈÕ¿ªÔ´ÁËDubboxÏîÄ¿£¬¿ÉÎªDubbo·þÎñ¿ò¼ÜÌá¹©¶àÏîÀ©Õ¹¹¦ÄÜ£¬°üÀ¨REST·ç¸ñÔ¶³Ìµ÷ÓÃ¡¢Kryo/FSTÐòÁÐ»¯µÈµÈ¡£
 3£©ÀïÃæÓÃµÄÊ²Ã´ÐòÁÐ»¯¿ò¼Ü
+
 4£©ÈçºÎÀûÓÃzookeeperÊµÏÖ×¢²á·¢ÏÖµÄ£¬»¹ÓÐ±ðµÄ·½Ê½ÊµÏÖ×¢²á·¢ÏÖÂð
+
 5£©»¹ÁË½â±ðµÄ·Ö²¼Ê½¿ò¼ÜÂð
+spring cloud,dobbox
 6£©ÈçºÎ½â¾ö·Ö²¼Ê½·þÎñµ÷ÓÃÁ´¹ý³¤µÄÎÊÌâ
+
 7£©ËüÊÇ×èÈûµÄÂð
+
 8£©ËµËµºËÐÄµÄÅäÖÃÓÐÄÄÐ©
+<!-- Ìá¹©·½Ó¦ÓÃÐÅÏ¢ -->  
+   <dubbo:application name="service_provider" /> 
+<!-- ÓÃzookeeper×¢²áÖÐÐÄ±©Â¶·þÎñµØÖ· -->  
+    <dubbo:registry address="zookeeper://127.0.0.1:2181" subscribe="false"/> 
+ <!-- ÓÃdubboÐ­ÒéÔÚÖ¸¶¨¶Ë¿Ú±©Â¶·þÎñ -->  
+    <dubbo:protocol name="dubbo" port="20880" />  
+<!-- ÉùÃ÷ÐèÒª±©Â¶µÄ£¨¶à¸ö£©·þÎñ½Ó¿Ú -->  
+    <dubbo:service interface="com.xxx.demo.dubbo.ServiceDemo" ref="demoService" />
+<!-- Éú³ÉÔ¶³Ì·þÎñ´úÀí£¬ÒÔ±ãÔÚ±¾µØ¿ÉÒÔÊ¹ÓÃÔ¶³ÌÆØÂ¶µÄ£¨¶à¸ö£©½Ó¿Ú·þÎñ-->  
+    <dubbo:reference interface="com.xxx.demo.dubbo.ServiceDemo" id="caller"/> 
 --------------------------------
 8¡¢Ïß³ÌÍ¬²½µÄÓÐÄÄÐ©·½Ê½
 1.Í¬²½·½·¨
@@ -787,11 +809,25 @@ PROPAGATION_NESTED ½«´´½¨Ò»¸öÒÀÀµÓÚÍâ²ãÊÂÎñµÄ×ÓÊÂÎñ£¬µ±Íâ²ãÊÂÎñÌá½»»ò»Ø¹öÊ±£¬×ÓÊ
 --------------------------------
 18¡¢Éè¼ÆÄ£Ê½
 1£©ËµËµÁù´óÉè¼ÆÔ­Ôò
+½Ó¿Úµ¥Ò»Ö°Ôð
+ÀïÊÏÌæ»»Ô­Ôò
+µÏÃ×ÌØ·¨Ôò
+½Ó¿Ú¸ôÀëÔ­Ôò
+ÒÀÀµµ¹ÖÃÔ­Ôò
+¿ª±ÕÔ­Ôò
 2£©Äã»áÄÄÐ©Éè¼ÆÄ£Ê½
 3£©×°ÊÎÄ£Ê½ºÍ´úÀíÄ£Ê½ÓÐÊ²Ã´Çø±ð
 4£©µ¥ÀýÄ£Ê½ÓÐÄÄ¼¸ÖÖÐ´·¨£¬ÓÐÄÄÐ©×¢ÒâµÄµØ·½
 5£©ÔõÃ´ÊµÏÖ²ßÂÔÄ£Ê½
 6£©springÖÐÓÃµ½ÁËÄÄÐ©Éè¼ÆÄ£Ê½
+1.¹¤³§Ä£Ê½£¬Õâ¸öºÜÃ÷ÏÔ£¬ÔÚ¸÷ÖÖBeanFactoryÒÔ¼°ApplicationContext´´½¨ÖÐ¶¼ÓÃµ½ÁË£»
+2.Ä£°æÄ£Ê½£¬Õâ¸öÒ²ºÜÃ÷ÏÔ£¬ÔÚ¸÷ÖÖBeanFactoryÒÔ¼°ApplicationContextÊµÏÖÖÐÒ²¶¼ÓÃµ½ÁË£»
+3.´úÀíÄ£Ê½£¬ÔÚAopÊµÏÖÖÐÓÃµ½ÁËJDKµÄ¶¯Ì¬´úÀí£»
+4.µ¥ÀýÄ£Ê½£¬Õâ¸ö±ÈÈçÔÚ´´½¨beanµÄÊ±ºò¡£
+5.TomcatÖÐÓÐºÜ¶à³¡¾°¶¼Ê¹ÓÃµ½ÁËÍâ¹ÛÄ£Ê½£¬ÒòÎªTomcatÖÐÓÐºÜ¶à²»Í¬µÄ×é¼þ£¬Ã¿¸ö×é¼þÐèÒªÏà»¥Í¨ÐÅ£¬µ«ÓÖ²»ÄÜ½«×Ô¼ºÄÚ²¿Êý¾Ý¹ý¶àµØ±©Â¶¸øÆäËû×é¼þ¡£ÓÃÍâ¹ÛÄ£Ê½¸ôÀëÊý¾ÝÊÇ¸öºÜºÃµÄ·½·¨¡£
+6.²ßÂÔÄ£Ê½ÔÚJavaÖÐµÄÓ¦ÓÃ£¬Õâ¸öÌ«Ã÷ÏÔÁË£¬ÒòÎªComparatorÕâ¸ö½Ó¿Ú¼òÖ±¾ÍÊÇÎª²ßÂÔÄ£Ê½¶øÉúµÄ¡£ComparableºÍComparatorµÄÇø±ðÒ»ÎÄÖÐ£¬ÏêÏ¸½²ÁËComparatorµÄÊ¹ÓÃ¡£±È·½ËµCollectionsÀïÃæÓÐÒ»¸ösort·½·¨£¬ÒòÎª¼¯ºÏÀïÃæµÄÔªËØÓÐ¿ÉÄÜÊÇ¸´ºÏ¶ÔÏó£¬¸´ºÏ¶ÔÏó²¢²»Ïñ»ù±¾Êý¾ÝÀàÐÍ£¬¿ÉÒÔ¸ù¾Ý´óÐ¡ÅÅÐò£¬¸´ºÏ¶ÔÏóÔõÃ´ÅÅÐòÄØ£¿»ùÓÚÕâ¸öÎÊÌâ¿¼ÂÇ£¬JavaÒªÇóÈç¹û¶¨ÒåµÄ¸´ºÏ¶ÔÏóÒªÓÐÅÅÐòµÄ¹¦ÄÜ£¬¾Í×ÔÐÐÊµÏÖComparable½Ó¿Ú»òComparator½Ó¿Ú.
+7.Ô­ÐÍÄ£Ê½£ºÊ¹ÓÃÔ­ÐÍÄ£Ê½´´½¨¶ÔÏó±ÈÖ±½ÓnewÒ»¸ö¶ÔÏóÔÚÐÔÄÜÉÏºÃµÃ¶à£¬ÒòÎªObjectÀàµÄclone()·½·¨ÊÇÒ»¸önative·½·¨£¬ËüÖ±½Ó²Ù×÷ÄÚ´æÖÐµÄ¶þ½øÖÆÁ÷£¬ÌØ±ðÊÇ¸´ÖÆ´ó¶ÔÏóÊ±£¬ÐÔÄÜµÄ²î±ð·Ç³£Ã÷ÏÔ¡£
+8.µü´úÆ÷Ä£Ê½£ºIterable½Ó¿ÚºÍIterator½Ó¿Ú ÕâÁ½¸ö¶¼ÊÇµü´úÏà¹ØµÄ½Ó¿Ú£¬¿ÉÒÔÕâÃ´ÈÏÎª£¬ÊµÏÖÁËIterable½Ó¿Ú£¬Ôò±íÊ¾Ä³¸ö¶ÔÏóÊÇ¿É±»µü´úµÄ£»Iterator½Ó¿ÚÏàµ±ÓÚÊÇÒ»¸öµü´úÆ÷£¬ÊµÏÖÁËIterator½Ó¿Ú£¬µÈÓÚ¾ßÌå¶¨ÒåÁËÕâ¸ö¿É±»µü´úµÄ¶ÔÏóÊ±ÈçºÎ½øÐÐµü´úµÄ
 --------------------------------
 19¡¢Ïß³ÌÓÐÄÄ¼¸ÖÖ×´Ì¬Á÷×ª
 ÐÂ½¨×´Ì¬¡¢¾ÍÐ÷×´Ì¬¡¢ÔËÐÐ×´Ì¬¡¢×èÈû×´Ì¬¼°ÖÕÖ¹×´Ì¬¡£
@@ -1131,6 +1167,34 @@ JVM³õÊ¼»¯²½Öè
 ³£¼ûµÄÆ½Ì¨»òÖÐ¼ä¼þÈçmicrosoftasp.netºÍIBM WAS¶¼»áÌá¹©¶ÔÁ½ÖÖ¹²Ïí·½Ê½µÄÖ§³Ö£¬tomcatÒ²ÊÇÕâÑù£¬µ«ÊÇÒ»°ã²ÉÓÃµÚ¶þÖÖ·½Ê½¡£ 
 
 --------------------------------
+JAVAÖÐ¶¼ÓÐÄÄ¼¸ÖÖ·Ö²¼Ê½ÊµÏÖ·½Ê½£¬¸÷ÓÐÊ²Ã´ÓÅÈ±µã:
+³£ÓÃµÄÓÐEJB¡¢rmi¡¢Web Service£¬»¹ÓÐHessian¡¢NIOµÈ£¬ËüÃÇµÄÓÅÈ±µã±È½Ï±ÈÏÂ£º
+1£ºEJB
+ÓÅÊÆ£º¿ÉÀ©Õ¹ÐÔºÃ£¬°²È«ÐÔÇ¿£¬Ö§³Ö·Ö²¼Ê½ÊÂÎñ´¦Àí¡£
+ÁÓÊÆ£º²»ÄÜ¿çÓïÑÔ£»ÅäÖÃÏà¶Ô¸´ÔÓ£¬²»Í¬J2EEÈÝÆ÷Ö®¼äºÜÄÑ×öÎÞ·ìÇ¨ÒÆ¡£
+2:rmi
+ÓÅÊÆ£ºÃæÏò¶ÔÏóµÄÔ¶³Ì·þÎñÄ£ÐÍ£»»ùÓÚTCPÐ­ÒéÉÏµÄ·þÎñ£¬Ö´ÐÐËÙ¶È¿ì¡£
+ÁÓÊÆ£º²»ÄÜ¿çÓïÑÔ£»Ã¿¸öÔ¶³Ì¶ÔÏó¶¼Òª°ó¶¨¶Ë¿Ú£¬²»Ò×Î¬»¤£»²»Ö§³Ö·Ö²¼Ê½ÊÂÎñJTA,RMI¿ò¼Ü¶ÔÓÚ°²È«ÐÔ¡¢ÊÂÎñ¡¢¿ÉÀ©Õ¹ÐÔµÄÖ§³Ö·Ç³£ÓÐÏÞ¡£
+3£º Web Service
+ÓÅÊÆ£º¿çÓïÑÔ¡¢¿çÆ½Ì¨£¬SOAË¼ÏëµÄÊµÏÖ£»°²È«ÐÔ¸ß£»¿ÉÒÔÓÃÀ´¼æÈÝlegacyÏµÍ³µÄ¹¦ÄÜ
+ÁÓÊÆ£ºÐÔÄÜÏà¶Ô²î£¬²»Ö§³ÖÁ½½×¶ÎÊÂÎñ
+4£ºHessian
+ÓÅÊÆ£ºÊ¹ÓÃ¼òµ¥£¬ËÙ¶È¿ì£»¿çÓïÑÔ£¬¿çÆ½Ì¨£»¿ÉÒÔÓÃÀ´¼æÈÝlegacyÏµÍ³µÄ¹¦ÄÜ¡£
+ÁÓÊÆ£º°²È«ÐÔµÄÖ§³Ö²»¹»Ç¿£¬²»Ö§³ÖÁ½½×¶ÎÊÂÎñ¡£
+5£ºNIO(Mina/Netty)
+ÓÅµã£º»ùÓÚTCPÍ¨ÐÅ£¬Ð§ÂÊÉÏ¸ßÓÚHTTPµÄ·½Ê½£¬·Ç×èÈûIOÓ¦¶Ô¸ß²¢·¢´Â´ÂÓÐÓà¡£¸ù¾Ý¾ßÌåµÄÐèÒªÖÆ¶¨Êý¾Ý´«ÊäµÄ¸ñÊ½£¬¿ÉÀ©Õ¹ÐÔÇ¿¡£
+È±µã£º²»ÄÜ¿çÓïÑÔ£¬ÎÞ·¨´©Í¸·À»ðÇ½¡£
+
+---------------------------------
+±£Ö¤·Ö²¼Ê½ÏµÍ³Êý¾ÝÒ»ÖÂÐÔµÄ6ÖÖ·½°¸
+
+---------------------------------
+ComparableºÍComparatorµÄÇø±ð
+ComparatorÎ»ÓÚ°üJava.utilÏÂ£¬¶øComparableÎ»ÓÚ°ü   java.langÏÂ
+Comparable ÊÇÒ»¸ö¶ÔÏó±¾Éí¾ÍÒÑ¾­Ö§³Ö×Ô±È½ÏËùÐèÒªÊµÏÖµÄ½Ó¿Ú£¨Èç String¡¢Integer ×Ô¼º¾Í¿ÉÒÔÍê³É±È½Ï´óÐ¡²Ù×÷£¬ÒÑ¾­ÊµÏÖÁËComparable½Ó¿Ú£©   
+ÓÃ Comparator ÊÇ²ßÂÔÄ£Ê½£¨strategy design pattern£©£¬¾ÍÊÇ²»¸Ä±ä¶ÔÏó×ÔÉí£¬¶øÓÃÒ»¸ö²ßÂÔ¶ÔÏó£¨strategy object£©À´¸Ä±äËüµÄÐÐÎª¡£
+ÓÐÊ±ÔÚÊµÏÖComparator½Ó¿ÚÊ±£¬²¢Ã»ÓÐÊµÏÖequals·½·¨£¬¿É³ÌÐò²¢Ã»ÓÐ±¨´í£¬Ô­ÒòÊÇÊµÏÖ¸Ã½Ó¿ÚµÄÀàÒ²ÊÇObjectÀàµÄ×ÓÀà£¬¶øObjectÀàÒÑ¾­ÊµÏÖÁËequals·½·¨
+Comparable & Comparator ¶¼ÊÇÓÃÀ´ÊµÏÖ¼¯ºÏÖÐÔªËØµÄ±È½Ï¡¢ÅÅÐòµÄ£¬Ö»ÊÇ Comparable ÊÇÔÚ¼¯ºÏÄÚ²¿¶¨ÒåµÄ·½·¨ÊµÏÖµÄÅÅÐò£¬Comparator ÊÇÔÚ¼¯ºÏÍâ²¿ÊµÏÖµÄÅÅÐò£¬
 
 
 
