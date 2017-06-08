@@ -106,7 +106,7 @@ StringBuilder >  StringBuffer  >  String
 6、抽象方法只能申明，不能实现，接口是设计的结果 ，抽象类是重构的结果
 7、抽象类里可以没有抽象方法
 8、如果一个类里有抽象方法，那么这个类只能是抽象类
-9、抽象方法要被实现，所以不能是静态的，也不能是私有的。
+9、抽象方法要被实现，所以不能是静态的(原因：抽象类是不能实例化的，即不能被分配内存;而static修饰的方法在类实例化之前就已经别分配了内存，这样一来矛盾就出现了：抽象类不能被分配内存，而static方法必须被分配内存。所以抽象类中不能有静态的抽象方法。)，也不能是私有的。
 10、接口可继承接口，并可多继承接口，但类只能单根继承。
 --------------------------------------------------------------
 面向对象：
@@ -1196,5 +1196,36 @@ Comparable 是一个对象本身就已经支持自比较所需要实现的接口（如 String、Integer 自
 有时在实现Comparator接口时，并没有实现equals方法，可程序并没有报错，原因是实现该接口的类也是Object类的子类，而Object类已经实现了equals方法
 Comparable & Comparator 都是用来实现集合中元素的比较、排序的，只是 Comparable 是在集合内部定义的方法实现的排序，Comparator 是在集合外部实现的排序，
 
+---------------------------------
+微服务：
+SOA与微服务不存在冲突问题，他们是相辅相承的！ SOA不是针对某一个系统的架构设计，他更多是针对整个企业的架构设计，他所解决的是更高层的整个企业各业务领域的整合问题。
+其实微服 务的概念非常像早期的Cobra，微服务是针对某单一业务功能的原子化架构设计，是解决下层具体业务实现的架构设计方法。微服务的颗粒度要求是一个funtion（）这样的级别，
+一个单独的funtion是不能匹配业务的，那么肯定需要在其上层有一个实现调度的东西，Api Gateway就被提出来了。Api Gateway的主要作用是管理api,调度，转换，拼装，这这些是不是很熟悉？
+没错，它就是SOA架构中的核心:企业服务总线的作用。因此，微服务负责访问数据库封装成服务，服务被注册到esb（企业服务总线），在esb中被转换和拼装，然后再给界面层使用。
+
+
+
+---------------------------------
+导致全表扫描： 
+select id from t where name like '%abc%' 
+若要提高效率，可以考虑全文检索。
+MySQL全文检索的条件限制
+     1、在MySQL5.6以下，只有MyISAM表支持全文检索。在MySQL5.6以上Innodb引擎表也提供支持全文检索。
+     2、相应字段建立FULLTEXT索引
+预设搜寻是不分大小写，若要分大小写，columne 的 character set要从utf8改成utf8_bin。
+(http://www.cnblogs.com/ibook360/p/5073313.html)
+---------------------------------
+请简单介绍一下什么是Spring?
+Spring的核心是一个轻量级（Lightweight）的容器（Container），它是实现IoC（Inversion of Control）容器和非入侵性（No intrusive）的框架，并提供AOP（Aspect-oriented programming）概念的实现方式；提供对持久层（Persistence）、事物（Transcation）的支持；提供MVC Web框架的实现，并对一些常用的企业服务API（Application Interface）提供一致的模型封装，是一个全方位的应用程序框架（Application Framework），除此之外，对现存的各种框架（Structs、JSF、Hibernate、Ibatis、Webwork等），Spring也提供了与他们相整合的方案。
+→ 回答解析：
+对于面试者回答什么是Spring，这个问题占6分分值，分值点分布：
+1、Spring的核心是一个轻量级（Lightweight）的容器（Container）。
+2、Spring是实现IoC（Inversion of Control）容器和非入侵性（No intrusive）的框架。
+3、Spring提供AOP（Aspect-oriented programming）概念的实现方式。
+4、Spring提供对持久层（Persistence）、事物（Transcation）的支持。
+5、Spring供MVC Web框架的实现，并对一些常用的企业服务API（Application Interface）提供一致的模型封装。
+6、Spring提供了对现存的各种框架（Structs、JSF、Hibernate、Ibatis、Webwork等）相整合的方案。
+总之，Spring是一个全方位的应用程序框架。
+上述6点1点一分，要求大家牢记。
 
 
