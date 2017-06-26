@@ -584,6 +584,8 @@ CANCELING½×¶ÎÊÇ»Ø¶ÔÒµÎñ×ö»Ø¹ö£¬ÔÚTRYING½×¶ÎÖÐ£¬Èç¹û´æÔÚ·ÖÖ§ÊÂÎñTRYINGÊ§°Ü£¬ÔòÐèÒ
 Á´±í£º´æ´¢Çø¼äÀëÉ¢£¬Õ¼ÓÃÄÚ´æ±È½Ï¿íËÉ£¬Ñ°Ö·À§ÄÑ£¬²åÈëÉ¾³ýÈÝÒ×
 hashmap×ÛºÏÓ¦ÓÃÁËÕâÁ½ÖÖÊý¾Ý½á¹¹£¬ÊµÏÖÁËÑ°Ö·ÈÝÒ×£¬²åÈëÉ¾³ýÒ²ÈÝÒ×
 ÊµÏÖÔ­Àí£ºÓÃÒ»¸öÊý×éÀ´´æ´¢ÔªËØ£¬µ«ÊÇÕâ¸öÊý×é´æ´¢µÄ²»ÊÇ»ù±¾Êý¾ÝÀàÐÍ¡£HashMapÊµÏÖÇÉÃîµÄµØ·½¾ÍÔÚÕâÀï£¬Êý×é´æ´¢µÄÔªËØÊÇÒ»¸öEntryÀà£¬Õâ¸öÀàÓÐÈý¸öÊý¾ÝÓò£¬key¡¢value£¨¼üÖµ¶Ô£©£¬next(Ö¸ÏòÏÂÒ»¸öEntry)
+
+ConcurrentMapµÄ²Ù×÷¶¼ÊÇÔ­×Ó²Ù×÷,ÊÇÏß³Ì°²È«µÄ.
 --------------------------------
 3¡¢¿ÉÒÔ×Ô¶¨Òåjava.lang.StringÀàÂð£¬ËµÃ÷ÎªÊ²Ã´
    ¿ÉÒÔ£¬µ«ÊÇ¼´Ê¹ÄãÐ´ÁËÕâ¸öÀà£¬Ò²Ã»ÓÐÓÃ.
@@ -1235,6 +1237,48 @@ Spring¶¨Ê±ÈÎÎñµÄ¼¸ÖÖÊµÏÖ
 3.Spring3.0ÒÔºó×Ô´øµÄtask£¬¿ÉÒÔ½«Ëü¿´³ÉÒ»¸öÇáÁ¿¼¶µÄQuartz£¬¶øÇÒÊ¹ÓÃÆðÀ´±ÈQuartz¼òµ¥Ðí¶à£¬ÉÔºó»á½éÉÜ¡£
 
 
+----------------------------------------------------------------
+¹ýÂËÆ÷ÓëÀ¹½ØÆ÷µÄÇø±ð
+¹ýÂËÆ÷£¬ÊÇÔÚjava webÖÐ£¬Äã´«ÈëµÄrequest,responseÌáÇ°¹ýÂËµôÒ»Ð©ÐÅÏ¢£¬»òÕßÌáÇ°ÉèÖÃÒ»Ð©²ÎÊý£¬È»ºóÔÙ´«Èëservlet»òÕßstrutsµÄ action½øÐÐÒµÎñÂß¼­£¬±ÈÈç¹ýÂËµô·Ç·¨url£¨²»ÊÇlogin.doµÄµØÖ·ÇëÇó£¬Èç¹ûÓÃ»§Ã»ÓÐµÇÂ½¶¼¹ýÂËµô£©,»òÕßÔÚ´«Èëservlet»òÕß strutsµÄactionÇ°Í³Ò»ÉèÖÃ×Ö·û¼¯£¬»òÕßÈ¥³ýµôÒ»Ð©·Ç·¨×Ö·û
+
+À¹½ØÆ÷£¬ÊÇÔÚÃæÏòÇÐÃæ±à³ÌµÄ¾ÍÊÇÔÚÄãµÄservice»òÕßÒ»¸ö·½·¨£¬Ç°µ÷ÓÃÒ»¸ö·½·¨£¬»òÕßÔÚ·½·¨ºóµ÷ÓÃÒ»¸ö·½·¨±ÈÈç¶¯Ì¬´úÀí¾ÍÊÇÀ¹½ØÆ÷µÄ¼òµ¥ÊµÏÖ£¬ÔÚÄãµ÷ÓÃ·½·¨Ç°´òÓ¡³ö×Ö·û´®£¨»òÕß×öÆäËüÒµÎñÂß¼­µÄ²Ù×÷£©£¬Ò²¿ÉÒÔÔÚÄãµ÷ÓÃ·½·¨ºó´òÓ¡³ö×Ö·û´®£¬ÉõÖÁÔÚÄãÅ×³öÒì³£µÄÊ±ºò×öÒµÎñÂß¼­µÄ²Ù×÷¡£
+
+À¹½ØÆ÷Óë¹ýÂËÆ÷µÄÇø±ð £º
+À¹½ØÆ÷ÊÇ»ùÓÚjavaµÄ·´Éä»úÖÆµÄ£¬¶ø¹ýÂËÆ÷ÊÇ»ùÓÚº¯Êý»Øµ÷¡£
+À¹½ØÆ÷²»ÒÀÀµÓëservletÈÝÆ÷£¬¹ýÂËÆ÷ÒÀÀµÓëservletÈÝÆ÷¡£
+À¹½ØÆ÷Ö»ÄÜ¶ÔactionÇëÇóÆð×÷ÓÃ£¬¶ø¹ýÂËÆ÷Ôò¿ÉÒÔ¶Ô¼¸ºõËùÓÐµÄÇëÇóÆð×÷ÓÃ¡£
+À¹½ØÆ÷¿ÉÒÔ·ÃÎÊactionÉÏÏÂÎÄ¡¢ÖµÕ»ÀïµÄ¶ÔÏó£¬¶ø¹ýÂËÆ÷²»ÄÜ·ÃÎÊ¡£
+ÔÚactionµÄÉúÃüÖÜÆÚÖÐ£¬À¹½ØÆ÷¿ÉÒÔ¶à´Î±»µ÷ÓÃ£¬¶ø¹ýÂËÆ÷Ö»ÄÜÔÚÈÝÆ÷³õÊ¼»¯Ê±±»µ÷ÓÃÒ»´Î
+Ö´ÐÐË³Ðò £º¹ýÂËÇ° - À¹½ØÇ° - Action´¦Àí - À¹½Øºó - ¹ýÂËºó¡£¸öÈËÈÏÎª¹ýÂËÊÇÒ»¸öºáÏòµÄ¹ý³Ì£¬Ê×ÏÈ°Ñ¿Í»§¶ËÌá½»µÄÄÚÈÝ½øÐÐ¹ýÂË(ÀýÈçÎ´µÇÂ¼ÓÃ»§²»ÄÜ·ÃÎÊÄÚ²¿Ò³ÃæµÄ´¦Àí)£»¹ýÂËÍ¨¹ýºó£¬À¹½ØÆ÷½«¼ì²éÓÃ»§Ìá½»Êý¾ÝµÄÑéÖ¤£¬×öÒ»Ð©Ç°ÆÚµÄÊý¾Ý´¦Àí£¬½Ó×Å°Ñ´¦ÀíºóµÄÊý¾Ý·¢¸ø¶ÔÓ¦µÄAction£»Action´¦ÀíÍê³É·µ»Øºó£¬À¹½ØÆ÷»¹¿ÉÒÔ×öÆäËû¹ý³Ì(»¹Ã»Ïëµ½Òª×öÉ¶)£¬ÔÙÏòÉÏ·µ»Øµ½¹ýÂËÆ÷µÄºóÐø²Ù×÷¡£
 
 
+----------------------------------------------------------------
+SpringMVCÓëStruts2Çø±ðÓë±È½Ï×Ü½á
+1¡¢Struts2ÊÇÀà¼¶±ðµÄÀ¹½Ø£¬ Ò»¸öÀà¶ÔÓ¦Ò»¸örequestÉÏÏÂÎÄ£¬SpringMVCÊÇ·½·¨¼¶±ðµÄÀ¹½Ø£¬Ò»¸ö·½·¨¶ÔÓ¦Ò»¸örequestÉÏÏÂÎÄ£¬¶ø·½·¨Í¬Ê±ÓÖ¸úÒ»¸öurl¶ÔÓ¦,ËùÒÔËµ´Ó¼Ü¹¹±¾ÉíÉÏSpringMVC¾ÍÈÝÒ×ÊµÏÖrestful url,¶østruts2µÄ¼Ü¹¹ÊµÏÖÆðÀ´Òª·Ñ¾¢£¬ÒòÎªStruts2ÖÐActionµÄÒ»¸ö·½·¨¿ÉÒÔ¶ÔÓ¦Ò»¸öurl£¬¶øÆäÀàÊôÐÔÈ´±»ËùÓÐ·½·¨¹²Ïí£¬ÕâÒ²¾ÍÎÞ·¨ÓÃ×¢½â»òÆäËû·½Ê½±êÊ¶ÆäËùÊô·½·¨ÁË¡£
+2¡¢ÓÉÉÏ±ßÔ­Òò£¬SpringMVCµÄ·½·¨Ö®¼ä»ù±¾ÉÏ¶ÀÁ¢µÄ£¬¶ÀÏírequest responseÊý¾Ý£¬ÇëÇóÊý¾ÝÍ¨¹ý²ÎÊý»ñÈ¡£¬´¦Àí½á¹ûÍ¨¹ýModelMap½»»Ø¸ø¿ò¼Ü£¬·½·¨Ö®¼ä²»¹²Ïí±äÁ¿£¬¶øStruts2¸ãµÄ¾Í±È½ÏÂÒ£¬ËäÈ»·½·¨Ö®¼äÒ²ÊÇ¶ÀÁ¢µÄ£¬µ«ÆäËùÓÐAction±äÁ¿ÊÇ¹²ÏíµÄ£¬Õâ²»»áÓ°Ïì³ÌÐòÔËÐÐ£¬È´¸øÎÒÃÇ±àÂë ¶Á³ÌÐòÊ±´øÀ´Âé·³£¬Ã¿´ÎÀ´ÁËÇëÇó¾Í´´½¨Ò»¸öAction£¬Ò»¸öAction¶ÔÏó¶ÔÓ¦Ò»¸örequestÉÏÏÂÎÄ¡£
+3¡¢ÓÉÓÚStruts2ÐèÒªÕë¶ÔÃ¿¸örequest½øÐÐ·â×°£¬°Ñrequest£¬sessionµÈservletÉúÃüÖÜÆÚµÄ±äÁ¿·â×°³ÉÒ»¸öÒ»¸öMap£¬¹©¸øÃ¿¸öActionÊ¹ÓÃ£¬²¢±£Ö¤Ïß³Ì°²È«£¬ËùÒÔÔÚÔ­ÔòÉÏ£¬ÊÇ±È½ÏºÄ·ÑÄÚ´æµÄ¡£
+4¡¢ À¹½ØÆ÷ÊµÏÖ»úÖÆÉÏ£¬Struts2ÓÐÒÔ×Ô¼ºµÄinterceptor»úÖÆ£¬SpringMVCÓÃµÄÊÇ¶ÀÁ¢µÄAOP·½Ê½£¬ÕâÑùµ¼ÖÂStruts2µÄÅäÖÃÎÄ¼þÁ¿»¹ÊÇ±ÈSpringMVC´ó¡£
+5¡¢SpringMVCµÄÈë¿ÚÊÇservlet£¬¶øStruts2ÊÇfilter£¨ÕâÀïÒªÖ¸³ö£¬filterºÍservletÊÇ²»Í¬µÄ¡£ÒÔÇ°ÈÏÎªfilterÊÇservletµÄÒ»ÖÖÌØÊâ£©£¬Õâ¾Íµ¼ÖÂÁË¶þÕßµÄ»úÖÆ²»Í¬£¬ÕâÀï¾ÍÇ£Éæµ½servletºÍfilterµÄÇø±ðÁË¡£
+6¡¢SpringMVC¼¯³ÉÁËAjax£¬Ê¹ÓÃ·Ç³£·½±ã£¬Ö»ÐèÒ»¸ö×¢½â@ResponseBody¾Í¿ÉÒÔÊµÏÖ£¬È»ºóÖ±½Ó·µ»ØÏìÓ¦ÎÄ±¾¼´¿É£¬¶øStruts2À¹½ØÆ÷¼¯³ÉÁËAjax£¬ÔÚActionÖÐ´¦ÀíÊ±Ò»°ã±ØÐë°²×°²å¼þ»òÕß×Ô¼ºÐ´´úÂë¼¯³É½øÈ¥£¬Ê¹ÓÃÆðÀ´Ò²Ïà¶Ô²»·½±ã¡£
+7¡¢SpringMVCÑéÖ¤Ö§³ÖJSR303£¬´¦ÀíÆðÀ´Ïà¶Ô¸ü¼ÓÁé»î·½±ã£¬¶øStruts2ÑéÖ¤±È½Ï·±Ëö£¬¸Ð¾õÌ«·³ÂÒ¡£
+8¡¢spring MVCºÍSpringÊÇÎÞ·ìµÄ¡£´ÓÕâ¸öÏîÄ¿µÄ¹ÜÀíºÍ°²È«ÉÏÒ²±ÈStruts2¸ß£¨µ±È»Struts2Ò²¿ÉÒÔÍ¨¹ý²»Í¬µÄÄ¿Â¼½á¹¹ºÍÏà¹ØÅäÖÃ×öµ½SpringMVCÒ»ÑùµÄÐ§¹û£¬µ«ÊÇÐèÒªxmlÅäÖÃµÄµØ·½²»ÉÙ£©¡£
+9¡¢ Éè¼ÆË¼ÏëÉÏ£¬Struts2¸ü¼Ó·ûºÏOOPµÄ±à³ÌË¼Ïë£¬ SpringMVC¾Í±È½Ï½÷É÷£¬ÔÚservletÉÏÀ©Õ¹¡£
+10¡¢SpringMVC¿ª·¢Ð§ÂÊºÍÐÔÄÜ¸ßÓÚStruts2¡£
+11¡¢SpringMVC¿ÉÒÔÈÏÎªÒÑ¾­100%ÁãÅäÖÃ¡£
 
+-------------------------------------------------
+Java¶àÏß³ÌÔËÐÐ»·¾³ÖÐ£¬ÔÚÄÄÐ©Çé¿öÏÂ»áÊ¹¶ÔÏóËøÊÍ·Å£¿
+
+ÓÉÓÚµÈ´ýÒ»¸öËøµÄÏß³ÌÖ»ÓÐÔÚ»ñµÃÕâ°ÑËøÖ®ºó£¬²ÅÄÜ»Ö¸´ÔËÐÐ£¬ËùÒÔÈÃ³ÖÓÐËøµÄÏß³ÌÔÚ²»ÔÙÐèÒªËøµÄÊ±ºò¼°Ê±ÊÍ·ÅËøÊÇºÜÖØÒªµÄ¡£ÔÚÒÔÏÂÇé¿öÏÂ£¬³ÖÓÐËøµÄÏß³Ì»áÊÍ·ÅËø£º
+£¨1£©Ö´ÐÐÍêÍ¬²½´úÂë¿é£¬¾Í»áÊÍ·ÅËø¡££¨synchronized£©
+£¨2£©ÔÚÖ´ÐÐÍ¬²½´úÂë¿éµÄ¹ý³ÌÖÐ£¬Óöµ½Òì³£¶øµ¼ÖÂÏß³ÌÖÕÖ¹£¬ËøÒ²»á±»ÊÍ·Å¡££¨exception£©
+£¨3£©ÔÚÖ´ÐÐÍ¬²½´úÂë¿éµÄ¹ý³ÌÖÐ£¬Ö´ÐÐÁËËøËùÊô¶ÔÏóµÄwait()·½·¨£¬Õâ¸öÏß³Ì»áÊÍ·ÅËø£¬½øÈë¶ÔÏóµÄµÈ´ý³Ø¡£(wait)
+
+³ýÁËÒÔÉÏÇé¿öÒÔÍâ£¬Ö»Òª³ÖÓÐËøµÄÏß³Ì»¹Ã»ÓÐÖ´ÐÐÍêÍ¬²½´úÂë¿é£¬¾Í²»»áÊÍ·ÅËø¡£
+ÔÚÏÂÃæÇé¿öÏÂ£¬Ïß³ÌÊÇ²»»áÊÍ·ÅËøµÄ£º
+£¨1£©Ö´ÐÐÍ¬²½´úÂë¿éµÄ¹ý³ÌÖÐ£¬Ö´ÐÐÁËThread.sleep()·½·¨£¬µ±Ç°Ïß³Ì·ÅÆúCPU£¬¿ªÊ¼Ë¯Ãß£¬ÔÚË¯ÃßÖÐ²»»áÊÍ·ÅËø¡£
+£¨2£©ÔÚÖ´ÐÐÍ¬²½´úÂë¿éµÄ¹ý³ÌÖÐ£¬Ö´ÐÐÁËThread.yield()·½·¨£¬µ±Ç°Ïß³Ì·ÅÆúCPU£¬µ«²»»áÊÍ·ÅËø¡£
+£¨3£©ÔÚÖ´ÐÐÍ¬²½´úÂë¿éµÄ¹ý³ÌÖÐ£¬ÆäËûÏß³ÌÖ´ÐÐÁËµ±Ç°Ïß³Ì¶ÔÏóµÄsuspend()·½·¨£¬µ±Ç°Ïß³Ì±»ÔÝÍ££¬µ«²»»áÊÍ·ÅËø
+
+------------------------------------------------
+ServletÊÇµ¥ÊµÀý¶àÏß³ÌÔËÐÐ·½Ê½£¬ËùÒÔ¶ÔÏó±äÁ¿Ïß³Ì²»°²È«£¬¾Ö²¿±äÁ¿Ïß³Ì°²È«¡£
